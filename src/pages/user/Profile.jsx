@@ -7,11 +7,12 @@ import {
 } from "@ant-design/icons";
 import { Avatar, Button, Modal } from "antd";
 import Follower from "../../components/user/profile/Follower";
+import upload from "../../firebase/config";
+import updatePhoto from "../../functions/updatePhoto";
 
 const Profile = () => {
   const [user, setUser] = useState();
   const [openPhoto, setOpenPhoto] = useState(false);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,7 +27,11 @@ const Profile = () => {
       fetchData();
     };
   }, []);
-  console.log(user);
+  const handleChange = async (e) => {
+    const getUrl = await upload(e.target);
+    updatePhoto(user.uid, getUrl);
+    console.log(getUrl);
+  };
   return (
     <>
       <div className="max-w-[935px] mx-auto px-5 pt-5">
@@ -50,7 +55,7 @@ const Profile = () => {
               title={
                 <>
                   <h3 className="bg-[#262626] text-center text-white">
-                    Followers
+                    Change Profile Photo
                   </h3>
                 </>
               }
@@ -61,7 +66,35 @@ const Profile = () => {
               footer={false}
               closeIcon={<CloseOutlined className="text-white" />}
             >
-              <div className="flex flex-col gap-3 pt-3 border-t border-gray-500"></div>
+              <div className="flex flex-col gap-3 pt-3 border-t border-gray-500">
+                <div className="flex items-center justify-center  text-base font-bold text-blue-400">
+                  <label
+                    htmlFor="getPhotoComputer"
+                    className="w-full text-center py-2 px-3 cursor-pointer"
+                  >
+                    <input
+                      hidden
+                      type="file"
+                      id="getPhotoComputer"
+                      onChange={handleChange}
+                    />
+                    Upload Photo
+                  </label>
+                </div>
+                <div className="flex items-center justify-center border-t border-gray-500 text-base font-bold text-red-400">
+                  <button className="w-full text-center py-2 px-3 cursor-pointer">
+                    Remove Photo
+                  </button>
+                </div>
+                <div className="flex items-center justify-center border-t border-gray-500 text-base font-bold text-gray-400">
+                  <button
+                    onClick={() => setOpenPhoto(false)}
+                    className="w-full text-center py-2 px-3 cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </Modal>
           </div>
           <div className="flex flex-col">
