@@ -6,13 +6,17 @@ import {
   CloseCircleTwoTone,
   createFromIconfontCN,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { message } from "antd";
+import { Link, useNavigate } from "react-router-dom";
+import { Spin, message } from "antd";
+import getFirebase from "../../functions/getFIrebase";
+import { auth } from "../../firebase/config";
+import { FacebookAuthProvider, signInWithPopup } from "firebase/auth";
+import postFirebase from "../../functions/postFirebase";
 const IconFont = createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
 });
 
-const bottomLogin = [
+export const bottomLogin = [
   "Meta",
   "About",
   "Blog",
@@ -30,10 +34,32 @@ const bottomLogin = [
 ];
 
 const Login = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState({
     username: "",
     password: "",
   });
+
+  const handleFacebookLogin = async () => {
+    const provider = new FacebookAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const { user, additionalUserInfo } = result;
+      if (additionalUserInfo?.isNewUser) {
+        postFirebase("users", user.uid, {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          uid: user.uid,
+          providerId: additionalUserInfo.providerId,
+          keywords: generateKeywords(user.displayName?.toLowerCase()),
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -43,19 +69,50 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (user.username === "" || user.password === "") {
-      message.success({
+      message.error({
         content: "Vui lòng nhập thông tin tài khoản",
         icon: <CloseCircleTwoTone twoToneColor="#ff0000" />,
       });
       return;
     }
-    console.log("ok");
+    setIsLoading(true);
+    const dataFirebase = await getFirebase("user");
+    const { username, password } = user;
+    for (const userId in dataFirebase) {
+      if (
+        dataFirebase[userId].username === username &&
+        dataFirebase[userId].password === password
+      ) {
+        localStorage.setItem(
+          "userLocal",
+          JSON.stringify(dataFirebase[userId].uid)
+        );
+        navigate("/", { state: { user: dataFirebase[userId] } });
+        setIsLoading(false);
+        return;
+      } else {
+        message.error({
+          content: "Tài khoản không tồn tại",
+          icon: <CloseCircleTwoTone twoToneColor="#ff0000" />,
+        });
+        setIsLoading(false);
+        return;
+      }
+    }
+    setIsLoading(false);
   };
   return (
     <>
+      {isLoading && (
+        <>
+          <div className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+            <Spin />
+          </div>
+        </>
+      )}
       <div className="flex flex-col items-center justify-center mt-8">
         <div className="flex items-center gap-8">
           <div className="w-[380px] h-[580px]">
@@ -100,7 +157,11 @@ const Login = () => {
                   <div className="mx-[18px] text-sm font-medium">OR</div>
                   <div className="h-[1px] flex-1 bg-gray-300"></div>
                 </div>
-                <button className="w-full flex items-center justify-center gap-2 mt-3">
+                <button
+                  type="button"
+                  onClick={handleFacebookLogin}
+                  className="w-full flex items-center justify-center gap-2 mt-3"
+                >
                   <IconFont type="icon-facebook" />
                   Log in with Facebook
                 </button>

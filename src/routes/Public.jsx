@@ -6,7 +6,9 @@ const Public = () => {
   return (
     <>
       <Sidebar></Sidebar>
-      <Outlet></Outlet>
+      <div className="ms-[245px] h-[100dvh] overflow-scroll bg-black">
+        <Outlet></Outlet>
+      </div>
     </>
   );
 };

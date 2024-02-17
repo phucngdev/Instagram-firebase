@@ -18,3 +18,12 @@ a {
 li {
   list-style: none;
 }
+::-webkit-scrollbar {
+  width: 5px;
+}
+.ant-modal-content {
+  background-color: #262626 !important;
+}
+.addcomment::placeholder {
+  color: #a8a8a8;
+}

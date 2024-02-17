@@ -1,29 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import login from "../../../public/login.png";
-import { CloseCircleTwoTone, createFromIconfontCN } from "@ant-design/icons";
+import {
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+  createFromIconfontCN,
+} from "@ant-design/icons";
 import { message } from "antd";
+import { v4 as uuidv4 } from "uuid";
+import postFirebase from "../../functions/postFirebase";
+import { bottomLogin } from "./Login";
 
 const IconFont = createFromIconfontCN({
   scriptUrl: "//at.alicdn.com/t/font_8d5l8fzk5b87iudi.js",
 });
-const bottomLogin = [
-  "Meta",
-  "About",
-  "Blog",
-  "Jobs",
-  "Help",
-  "API",
-  "Privacy",
-  "Terms",
-  "Locations",
-  "Instagram Lite",
-  "Threads",
-  "Contact Uploading & Non-Users",
-  "Meta Verified",
-  "@2024 Instagram from Meta",
-];
 const Register = () => {
+  const navigate = useNavigate();
+  const [messageApi, contextHolder] = message.useMessage();
   const [user, setUser] = useState({
     phoneOremail: "",
     fullname: "",
@@ -37,6 +30,18 @@ const Register = () => {
       ...user,
       [name]: value,
     });
+  };
+
+  const success = async () => {
+    await messageApi
+      .open({
+        type: "loading",
+        content: "Vui lòng chờ trong giây lát",
+        duration: 2.5,
+      })
+      .then(() => message.success("Đăng ký thành công", 2.5))
+      .then(() => message.info("Vui lòng đăng nhập để sử dụng", 2.5));
+    navigate("/login");
   };
 
   const handleSubmit = (e) => {
@@ -54,21 +59,24 @@ const Register = () => {
       return;
     }
     const newUser = {
-      userid: "",
+      uid: uuidv4(),
       fullname: user.fullname,
       phoneOremail: user.phoneOremail,
       username: user.username,
       password: user.password,
-      imgAvt: "",
-      follow: 0,
-      following: 0,
+      photoUrl: "",
+      followers: [],
+      following: [],
       posts: [],
       story: [],
       created: new Date().toLocaleString(),
     };
+    postFirebase("user", newUser.uid, newUser);
+    success();
   };
   return (
     <>
+      {contextHolder}
       <div className="w-[350px] flex flex-col mx-auto mt-8">
         <div className="flex flex-col items-center border border-gray-300 py-[10px]">
           <div className="w-[175px] h-[51px] overflow-hidden bg-center mt-9 mb-3">

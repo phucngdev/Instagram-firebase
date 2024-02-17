@@ -1,10 +1,10 @@
 import { getDatabase, ref, child, get } from "firebase/database";
 import { database } from "../firebase/config";
 
-const getFirebase = async (collections) => {
+const getProfile = async (uid) => {
   let getData = null;
   const dbRef = ref(database);
-  await get(child(dbRef, collections))
+  await get(child(dbRef, `user/${uid}`))
     .then((snapshot) => {
       if (snapshot.exists()) {
         getData = snapshot.val();
@@ -18,4 +18,4 @@ const getFirebase = async (collections) => {
   return getData;
 };
 
-export default getFirebase;
+export default getProfile;
