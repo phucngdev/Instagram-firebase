@@ -3,7 +3,7 @@ import { CloseOutlined } from "@ant-design/icons";
 import { Button, Modal } from "antd";
 import { Link } from "react-router-dom";
 
-const Likes = () => {
+const Likes = ({ likes }) => {
   const [openLikes, setOpenLikes] = useState(false);
   return (
     <>
@@ -11,7 +11,7 @@ const Likes = () => {
         onClick={() => setOpenLikes(true)}
         className="text-sm text-white cursor-pointer font-bold"
       >
-        123.123 likes
+        {likes?.length} likes
       </span>
       <Modal
         title={

@@ -36,7 +36,7 @@ const ModalCreate = ({ openCreate, setOpenCreate }) => {
     }
     const newPosts = {
       id: uuidv4(),
-      uid: user.uid,
+      user: user,
       caption: caption,
       photoPost: urlPhotoNew,
       likes: [],
@@ -48,6 +48,7 @@ const ModalCreate = ({ openCreate, setOpenCreate }) => {
       content: "Đăng bài thành công",
       icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
     });
+    setOpenCreate(false);
     setUrlPhotoNew("");
     setCaption("");
   };
