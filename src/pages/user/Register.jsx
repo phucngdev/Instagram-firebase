@@ -52,7 +52,7 @@ const Register = () => {
       user.username === "" ||
       user.password === ""
     ) {
-      message.success({
+      message.error({
         content: "Vui lòng nhập đủ thông tin",
         icon: <CloseCircleTwoTone twoToneColor="#ff0000" />,
       });

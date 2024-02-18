@@ -1,14 +1,18 @@
 import {
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
   CloseOutlined,
   DownOutlined,
   EnvironmentOutlined,
   InstagramOutlined,
   SmileOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, message } from "antd";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
+import upload from "../../../firebase/config";
+import postFirebase from "../../../functions/postFirebase";
 
 const { TextArea } = Input;
 const ModalCreate = ({ openCreate, setOpenCreate }) => {
@@ -17,18 +21,36 @@ const ModalCreate = ({ openCreate, setOpenCreate }) => {
     return userLocal;
   });
   const [urlPhotoNew, setUrlPhotoNew] = useState("");
-  const [newPost, setNewPost] = useState({
-    id: uuidv4(),
-    uid: user.uid,
-    caption: "",
-    photoPost: "",
-    created: new Date().toLocaleDateString(),
-  });
+  const [caption, setCaption] = useState("");
   const handleChange = async (e) => {
     const getUrl = await upload(e.target);
     setUrlPhotoNew(getUrl);
   };
-  const handleShare = () => {};
+  const handleShare = () => {
+    if (urlPhotoNew === "" || caption === "") {
+      message.error({
+        content: "Vui lòng nhập đủ thông tin",
+        icon: <CloseCircleTwoTone twoToneColor="#ff0000" />,
+      });
+      return;
+    }
+    const newPosts = {
+      id: uuidv4(),
+      uid: user.uid,
+      caption: caption,
+      photoPost: urlPhotoNew,
+      likes: [],
+      comments: [],
+      created: new Date().toLocaleString(),
+    };
+    postFirebase("posts", newPosts.id, newPosts);
+    message.success({
+      content: "Đăng bài thành công",
+      icon: <CheckCircleTwoTone twoToneColor="#52c41a" />,
+    });
+    setUrlPhotoNew("");
+    setCaption("");
+  };
   return (
     <>
       <Modal
@@ -99,6 +121,8 @@ const ModalCreate = ({ openCreate, setOpenCreate }) => {
               maxLength={2200}
               placeholder="Write a caption"
               className="mt-4"
+              value={caption}
+              onChange={(e) => setCaption(e.target.value)}
               style={{
                 height: 120,
                 resize: "none",
