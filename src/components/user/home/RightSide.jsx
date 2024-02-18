@@ -1,23 +1,9 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar } from "antd";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import getProfile from "../../../functions/getProfile";
+import React from "react";
+import { Link } from "react-router-dom";
 
-const RightSide = () => {
-  const [user, setUser] = useState();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userLocal = JSON.parse(localStorage.getItem("userLocal"));
-        const dataFirebase = await getProfile(userLocal);
-        setUser(dataFirebase);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
+const RightSide = ({ user }) => {
   return (
     <>
       <div className="flex flex-col mt-9 w-[319px] ps-[64px] h-[100vh]">

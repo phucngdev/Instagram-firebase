@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import login from "../../../public/login.png";
 import phone from "../../../public/home-phones-2x.png";
 import {
@@ -35,11 +35,21 @@ export const bottomLogin = [
 
 const Login = () => {
   const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(() => {
+    const userlocal = JSON.parse(localStorage.getItem("userLocal")) || false;
+    return userlocal;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState({
     username: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (isLogin) {
+      navigate("/");
+    }
+  }, []);
 
   const handleFacebookLogin = async () => {
     const provider = new FacebookAuthProvider();
@@ -86,11 +96,8 @@ const Login = () => {
         dataFirebase[userId].username === username &&
         dataFirebase[userId].password === password
       ) {
-        localStorage.setItem(
-          "userLocal",
-          JSON.stringify(dataFirebase[userId].uid)
-        );
-        navigate("/", { state: { user: dataFirebase[userId] } });
+        localStorage.setItem("userLocal", JSON.stringify(dataFirebase[userId]));
+        navigate("/");
         setIsLoading(false);
         return;
       } else {

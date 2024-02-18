@@ -11,26 +11,15 @@ import upload from "../../firebase/config";
 import updatePhoto from "../../functions/updatePhoto";
 
 const Profile = () => {
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(() => {
+    const userLocal = JSON.parse(localStorage.getItem("userLocal"));
+    return userLocal;
+  });
   const [openPhoto, setOpenPhoto] = useState(false);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userLocal = JSON.parse(localStorage.getItem("userLocal"));
-        const dataFirebase = await getProfile(userLocal);
-        setUser(dataFirebase);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    return () => {
-      fetchData();
-    };
-  }, []);
+
   const handleChange = async (e) => {
     const getUrl = await upload(e.target);
     updatePhoto(user.uid, getUrl);
-    console.log(getUrl);
   };
   return (
     <>

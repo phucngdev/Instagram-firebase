@@ -27,3 +27,15 @@ li {
 .addcomment::placeholder {
   color: #a8a8a8;
 }
+.ant-input-affix-wrapper {
+  background-color: transparent !important;
+}
+.ant-input {
+  color: #ffffff !important;
+}
+.ant-input::placeholder {
+  color: #a8a8a8 !important;
+}
+.ant-input-data-count {
+  color: #ffffff !important;
+}

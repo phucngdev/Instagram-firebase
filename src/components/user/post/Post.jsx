@@ -34,7 +34,7 @@ const Post = () => {
             </div>
             <EllipsisOutlined className="cursor-pointer p-1 rounded-full hover:bg-gray-800" />
           </div>
-          <div className="h-[468px] flex justify-center mt-3 border-x border-gray-800">
+          <div className="h-[468px] flex justify-center mt-3 border border-gray-800">
             <img
               className="rounded-sm h-full object-cover"
               src="https://scontent.cdninstagram.com/v/t39.30808-6/427642404_18421098388027730_7880305453225096293_n.jpg?stp=dst-jpg_e15&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE2NTUuc2RyIn0&_nc_ht=scontent.cdninstagram.com&_nc_cat=102&_nc_ohc=VW0IfeyKkt8AX93K5MX&edm=APs17CUAAAAA&ccb=7-5&ig_cache_key=MzI5OTY4MDcwNzU1MDk4MzkwNg%3D%3D.2-ccb7-5&oh=00_AfAF-_hNmauFC_87qThgFNdtvFXWng4yBRSXIWNh_biF3Q&oe=65D59509&_nc_sid=10d13b"

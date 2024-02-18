@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import LeftSide from "../../components/user/home/LeftSide";
 import RightSide from "../../components/user/home/RightSide";
-import { useLocation } from "react-router-dom";
 
 const Home = () => {
+  const [user, setUser] = useState(() => {
+    const userLocal = JSON.parse(localStorage.getItem("userLocal"));
+    return userLocal;
+  });
   return (
     <>
       <div className="flex justify-center">
-        <LeftSide></LeftSide>
-        <RightSide></RightSide>
+        <LeftSide user={user}></LeftSide>
+        <RightSide user={user}></RightSide>
       </div>
     </>
   );
